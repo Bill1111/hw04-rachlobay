@@ -19,6 +19,7 @@ I chose to "Create a second data frame, complementary to Gapminder. Join this wi
 
 |               | Quick and important links|
 | ------------- |-------------|
-|  :coffee: | [Gapminder data exploration (.md)](https://github.com/STAT545-UBC-students/hw03-rachlobay/blob/master/hw03-rachlobay.md)| 
-|  :coffee: | [Gapminder data exploration (.Rmd)](https://github.com/STAT545-UBC-students/hw03-rachlobay/blob/master/hw03-rachlobay.Rmd)| 
-| ::coffee:  | [Gapminder data exploration figure folder ](https://github.com/STAT545-UBC-students/hw03-rachlobay/tree/master/hw03-rachlobay_files)|
+|  :coffee: | [tidy data and joins (.Rmd)](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/STAT545-HW04-Tidy-data-and-joins.Rmd)| 
+|  :coffee: | [tidy data and joins (.md)](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/STAT545-HW04-Tidy-data-and-joins.md)| 
+|  :coffee: | [cereal.csv](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/cereal.csv)| 
+| ::coffee:  | [image folder]https://github.com/STAT545-UBC-students/hw04-rachlobay/tree/master/images)|
