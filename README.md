@@ -14,3 +14,11 @@ I chose to "Create a second data frame, complementary to Gapminder. Join this wi
   - One row per country, a country variable and one or more variables with extra info, such as language spoken, NATO membership, national animal, or capital city.
   - One row per continent, a continent variable and one or more variables with extra info, such as northern versus southern hemisphere.
 
+# Navigation for HW #4
+
+
+|               | Quick and important links|
+| ------------- |-------------|
+|  :coffee: | [Gapminder data exploration (.md)](https://github.com/STAT545-UBC-students/hw03-rachlobay/blob/master/hw03-rachlobay.md)| 
+|  :coffee: | [Gapminder data exploration (.Rmd)](https://github.com/STAT545-UBC-students/hw03-rachlobay/blob/master/hw03-rachlobay.Rmd)| 
+| ::coffee:  | [Gapminder data exploration figure folder ](https://github.com/STAT545-UBC-students/hw03-rachlobay/tree/master/hw03-rachlobay_files)|
