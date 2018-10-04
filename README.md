@@ -22,4 +22,4 @@ I chose to "Create a second data frame, complementary to Gapminder. Join this wi
 |  :coffee: | [tidy data and joins (.Rmd)](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/STAT545-HW04-Tidy-data-and-joins.Rmd)| 
 |  :coffee: | [tidy data and joins (.md)](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/STAT545-HW04-Tidy-data-and-joins.md)| 
 |  :coffee: | [cereal.csv](https://github.com/STAT545-UBC-students/hw04-rachlobay/blob/master/cereal.csv)| 
-| ::coffee:  | [image folder](https://github.com/STAT545-UBC-students/hw04-rachlobay/tree/master/images)|
+| :coffee:  | [image folder](https://github.com/STAT545-UBC-students/hw04-rachlobay/tree/master/images)|
