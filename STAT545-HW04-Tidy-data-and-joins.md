@@ -307,7 +307,7 @@ So, the Nutrients column has now been split back into the Fat, `Protein (g)`, an
 
 We can combine the data from two variables by using the unite() function.
 
-\*\* Example: \*\*
+**Example:**
 
 First, we will arrange the Manufacturer\_Shelf column in descending order (ie. top to bottom shelf) by using the dplyr function arrange(). Then, let's unite the columns of Manufacturer and Display Shelf to investigate which manufacturers get top-shelf and bottom-shelf priority.
 
@@ -465,7 +465,7 @@ Notice that the resulting tibble only contains the variables that we had in over
 
 We can easily see the difference between the tibbles resulting from the semi\_join function and the inner\_join function by looking at a side-by-side comparison of them.
 
-I will load the gridExtra package to display the tables side-by-side. Note that in order to use the grid.arrange() function on the two tables, I first had to convert them each to tableGrob. The left is the semi\_join function result, while the right is the inner\_join function result.
+I will load the gridExtra package to display the tables side-by-side. Note that in order to use the grid.arrange() function on the two tables, I first had to convert them each to tableGrob. The left is the semi\_join function result, while the right is the inner\_join function result. I couldn't find a quick way to add a title to each tableGrob. I think that revealed one of the drawbacks of usign a tableGrob. Now, the code I used to add a title to each tableGrob was found [here](https://stackoverflow.com/questions/31640916/how-can-i-add-a-title-to-a-tablegrob-plot).
 
 ``` r
 library(gridExtra) # load gridExtra package 
@@ -479,16 +479,42 @@ library(gridExtra) # load gridExtra package
     ##     combine
 
 ``` r
+library(grid) # load grid package to use textGrob() function to add titles to table (for example, I used function textGrob() from this package)
+library(gtable) # load gtable package to add titles to tables (for example, I used functions gtable_add_rows() and gtable_add_grob() from this package).
+
+
 sj_Grobtable <- tableGrob(sj_csm_cb, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.55)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.55)), 
     rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform sjcsm into a tableGrob
+
+# add title to sj_Grobtable
+title <- textGrob("semi_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+sj_Grobtable <- gtable_add_rows(
+  sj_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+sj_Grobtable <- gtable_add_grob(
+  sj_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(sj_Grobtable)
+)
 
 
 ij_Grobtable <- tableGrob(ij_csm_cb, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.55)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.55)), 
     rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform ijcsm into a tableGrob
+
+# add title to ij_Grobtable
+title <- textGrob("inner_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ij_Grobtable <- gtable_add_rows(
+  ij_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ij_Grobtable <- gtable_add_grob(
+  ij_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ij_Grobtable)
+)
 
 
 grid.arrange(sj_Grobtable, ij_Grobtable, nrow=1) # display tables side-by-side
@@ -556,10 +582,33 @@ lj_Grobtable <- tableGrob(lj_csm_cb, theme=ttheme_default(
     colhead = list(fg_params=list(cex = 0.55)), 
     rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform ljcsm into a tableGrob
 
+# add title to lj_Grobtable
+title <- textGrob("left_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+lj_Grobtable <- gtable_add_rows(
+  lj_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+lj_Grobtable <- gtable_add_grob(
+  lj_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(lj_Grobtable)
+)
+
+
 rj_Grobtable <- tableGrob(rj_csm_cb, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.55)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.55)), 
     rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform rjcsm into a tableGrob
+
+# add title to rj_Grobtable
+title <- textGrob("right_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+rj_Grobtable <- gtable_add_rows(
+  rj_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+rj_Grobtable <- gtable_add_grob(
+  rj_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(rj_Grobtable)
+)
 
 
 grid.arrange(lj_Grobtable, rj_Grobtable, nrow=1) # display tables side-by-side
@@ -588,6 +637,65 @@ anti\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
     ## 1 cuppa_tea tea        3.00
 
 We can see from the anti\_join function output that the only row the overpriced\_coffee\_shop\_menu tibble where there is nomatching values in coffee\_brand is the tea row. Hence, the tea row was the only row in the output (with its column values for drink\_type and `price ($)` from overpriced\_coffee\_shop\_menu).
+
+I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions.
+
+``` r
+layout <- rbind(c(1,2),
+                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
+
+ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
+
+# add title to ocsm_Grobtable
+title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ocsm_Grobtable <- gtable_add_rows(
+  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ocsm_Grobtable <- gtable_add_grob(
+  ocsm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ocsm_Grobtable)
+)
+
+coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
+
+# add title to coffee_brand_Grobtable
+title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+coffee_brand_Grobtable <- gtable_add_rows(
+  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+coffee_brand_Grobtable<- gtable_add_grob(
+  coffee_brand_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
+)
+
+aj_csm_cb_Grobtable <- tableGrob(aj_csm_cb, theme=ttheme_default(    
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform aj_csm_cb into a tableGrob
+
+# add title to fjcsm_Grobtable
+title <- textGrob("anti_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+aj_csm_cb_Grobtable <- gtable_add_rows(
+  aj_csm_cb_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+aj_csm_cb_Grobtable <- gtable_add_grob(
+  aj_csm_cb_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(aj_csm_cb_Grobtable)
+)
+
+grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, aj_csm_cb_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
+```
+
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
 inner\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ----------------------------------------------------------
@@ -637,6 +745,48 @@ semi\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 
 We can see here that when we set x = coffee\_brand and y = overpriced\_coffee\_shop\_menu, the resulting tibble is very similar to the tibble for coffee\_brand. The major difference is that the semi\_join function results in a loss of the decaf drip coffee row, which was under drink\_type in the coffee\_brand tibble. This is because there is no drink\_type that is listed as decaf drip coffee in overpriced\_coffee\_shop\_menu.
 
+I will display the semi\_join() and the inner\_join() function results side-by-side for you to see the difference in output from using each the functions.
+
+``` r
+sj_Grobtable <- tableGrob(sj_cb_csm, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.55)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.55)), 
+    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform sj_cb_csm into a tableGrob
+
+# add title to sj_Grobtable
+title <- textGrob("semi_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+sj_Grobtable <- gtable_add_rows(
+  sj_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+sj_Grobtable <- gtable_add_grob(
+  sj_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(sj_Grobtable)
+)
+
+
+ij_Grobtable <- tableGrob(ij_cb_csm, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.55)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.55)), 
+    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform ijcsm into a tableGrob
+
+# add title to ij_Grobtable
+title <- textGrob("inner_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ij_Grobtable <- gtable_add_rows(
+  ij_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ij_Grobtable <- gtable_add_grob(
+  ij_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ij_Grobtable)
+)
+
+
+grid.arrange(sj_Grobtable, ij_Grobtable, nrow=1) # display tables side-by-side
+```
+
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-24-1.png)
+
 left\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ---------------------------------------------------------
 
@@ -663,6 +813,65 @@ left\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 
 The left\_join(coffee\_brand, overpriced\_coffee\_shop\_menu) output is very similar to the inner\_join(coffee\_brand, overpriced\_coffee\_shop\_menu) output. The difference is that in the output from the left\_join function, we can see that there is a row for the drink\_type decaf drip coffee. Since there is no decaf drip coffee in the overpriced\_coffee\_shop\_menu, the variables from the overpriced\_coffee\_shop\_menu tibble have an NA under them for decaf drip coffee. Meaning, name and `price ($)` have NA for decaf drip coffee.
 
+I will display the left\_join() function close to the original two tables (overpriced\_coffee\_shop\_menu and coffee\_brand) for you to see how the function works. I will skip the comparison of left\_join() with right\_join(), because I think that one side-by-side comparison is enough to go by.
+
+``` r
+layout <- rbind(c(1,2),
+                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
+
+ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
+
+# add title to ocsm_Grobtable
+title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ocsm_Grobtable <- gtable_add_rows(
+  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ocsm_Grobtable <- gtable_add_grob(
+  ocsm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ocsm_Grobtable)
+)
+
+coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
+
+# add title to coffee_brand_Grobtable
+title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+coffee_brand_Grobtable <- gtable_add_rows(
+  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+coffee_brand_Grobtable<- gtable_add_grob(
+  coffee_brand_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
+)
+
+lj_Grobtable <- tableGrob(lj_cb_csm, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows=NULL))  # transform ljcsm into a tableGrob
+
+# add title to lj_Grobtable
+title <- textGrob("left_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+lj_Grobtable <- gtable_add_rows(
+  lj_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+lj_Grobtable <- gtable_add_grob(
+  lj_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(lj_Grobtable)
+)
+
+grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, lj_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
+```
+
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-26-1.png)
+
 anti\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ---------------------------------------------------------
 
@@ -682,6 +891,65 @@ anti\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
     ## 1 decaf drip coffee Maxwell House
 
 What we expect to see from the anti\_join function when we put x = coffee\_brand and y = overpriced\_coffee\_shop\_menu is all the rows from coffee\_Brand where there re no matching values in overpriced\_coffee\_shop\_menu. Hence, what appears in the output is the drink\_type decaf drip coffee and its brand Maxwell House because only the decaf drip coffee row did not have any matches in the overpriced\_coffee\_shop\_menu... The Overpriced Coffee Shop is a small store and has not expanded enough to include decaf coffee yet.
+
+Again, I will display the anti\_join() function close to the original two tables (overpriced\_coffee\_shop\_menu and coffee\_brand) for you to get a visual idea of how the anti\_join() function works.
+
+``` r
+layout <- rbind(c(1,2),
+                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
+
+ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
+
+# add title to ocsm_Grobtable
+title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ocsm_Grobtable <- gtable_add_rows(
+  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ocsm_Grobtable <- gtable_add_grob(
+  ocsm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ocsm_Grobtable)
+)
+
+coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
+
+# add title to coffee_brand_Grobtable
+title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+coffee_brand_Grobtable <- gtable_add_rows(
+  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+coffee_brand_Grobtable<- gtable_add_grob(
+  coffee_brand_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
+)
+
+aj_cb_csm_Grobtable <- tableGrob(aj_cb_csm, theme=ttheme_default(    
+    core = list(fg_params=list(cex = 0.7)), # smaller table text size
+    colhead = list(fg_params=list(cex = 0.7)), 
+    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform aj_csm_cb into a tableGrob
+
+# add title to fjcsm_Grobtable
+title <- textGrob("anti_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+aj_cb_csm_Grobtable <- gtable_add_rows(
+  aj_cb_csm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+aj_cb_csm_Grobtable <- gtable_add_grob(
+  aj_cb_csm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(aj_cb_csm_Grobtable)
+)
+
+grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, aj_cb_csm_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
+```
+
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 full\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 ---------------------------------------------------------
@@ -721,17 +989,50 @@ ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(
     colhead = list(fg_params=list(cex = 0.7)), 
     rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
 
+# add title to ocsm_Grobtable
+title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+ocsm_Grobtable <- gtable_add_rows(
+  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+ocsm_Grobtable <- gtable_add_grob(
+  ocsm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(ocsm_Grobtable)
+)
+
 coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.7)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.7)), 
     rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
+
+# add title to coffee_brand_Grobtable
+title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+coffee_brand_Grobtable <- gtable_add_rows(
+  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+coffee_brand_Grobtable<- gtable_add_grob(
+  coffee_brand_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
+)
 
 fjcsm_Grobtable <- tableGrob(fjcsm, theme=ttheme_default(    
     core = list(fg_params=list(cex = 0.7)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.7)), 
     rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform fjcsm into a tableGrob
 
-grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, fjcsm_Grobtable,layout_matrix=layout) # display tables side-by-side
+# add title to fjcsm_Grobtable
+title <- textGrob("full_join function result", gp = gpar(fontsize = 10))
+padding <- unit(0.5,"line")
+fjcsm_Grobtable <- gtable_add_rows(
+  fjcsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
+)
+fjcsm_Grobtable <- gtable_add_grob(
+  fjcsm_Grobtable, list(title),
+  t = 1, l = 1, r = ncol(fjcsm_Grobtable)
+)
+
+grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, fjcsm_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
 ```
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-30-1.png)
