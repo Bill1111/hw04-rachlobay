@@ -6,6 +6,7 @@ output: github_document
 always_allow_html: yes
 ---
 
+
 # Cheat sheet for tidyr functions
 
 A very helpful RStudio cheat sheet on tidyr functions and data wrangling can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Refer to that guide if you have any immediate questions. It will probably help :smile: My cheat sheet aims to be a highlight reel of that guide along with answering a few other interesting questions. Hence, I will use a few images from the RStudio guide in my own cheat sheet. 
@@ -268,6 +269,8 @@ Notice that when we use the inner_join function, we miss the tea brand because t
 
 ```{r}
 (sj_csm_cb <- semi_join(overpriced_coffee_shop_menu, coffee_brand)) # use the semi_join function to join the two tibbles and show output
+
+
 ```
 
 As we had with the inner_join function, we can see that the semi_joinfunction automatically joins by "coffee_type". That is because the common variable between both of the tibbles is drink_type.
@@ -741,3 +744,214 @@ grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, fjcsm_Grobtable,layout_matr
 
 ```
 
+# Activity 3: Optional add-on to previous exercises
+
+## Explore the base R function merge()
+
+So, in this exercise, I will explore the merge() function, which does joins. Additionally, I will compare and contrast it with the dplyr join functions.
+
+I found from [here](https://stackoverflow.com/questions/1299871/how-to-join-merge-data-frames-inner-outer-left-right) the equivalents of various dplyr join functions as merge functions. Below is a table with the merge functions and the corresponding join functions for quick and easy comparison.
+
+| name | merge function | dplyr package equivalent |
+| ------------- |-------------|-------------|
+| inner join | merge(df1, df2) | inner_join(df1, df2) | 
+| outer join | merge(x = df1, y = df2, by = "common_variable", all = TRUE) | full_join(df1, df2) | 
+| left outer | merge(x = df1, y = df2, by = "common_variable", all.x = TRUE) | left_join(df1, df2) |
+| right outer | merge(x = df1, y = df2, by = "common_variable", all.y = TRUE) | right_joint(df1, df2) |
+| cross join | merge(x = df1, y = df2, by = NULL) | no easy dplyr equivalent |
+
+Below, I will give a visual that should elucidate the differences between the different merge functions `all` arguments.
+
+![all in different merges](images/all_in_diff_merges.jpg)
+
+
+Now, I will investigate the output the merge functions and their dplyr equivalents below. I will use my overpriced coffee shop menu and coffee brand data frames to demonstrate the functions.
+
+### inner_join vs corresponding merge function
+
+The inner join function from merge is basically the same as the inner join function in dplyr. In either function, you can specify the variable (or variables) you want to join by by using by = "VARIABLE_NAME_HERE" as the argument after you specify the data frames you wish to join.
+
+**Example:**
+
+Recall that we performed the inner_join function of the overpriced_coffee_shop_menu and coffee_brand data frames. 
+
+```{r}
+(inner_join(overpriced_coffee_shop_menu, coffee_brand)) # use the inner_join function to join the two tibbles and show output
+```
+
+Note that inner_join tells us that it is joining by "drink_type". Now, if we use the merge function, as simply `merge(df1, df2)` we should see the same information in the data frame, but not that message that the function is joining by "drink_type". Let's check this.
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand)) # use the merge function to join the two tibbles and show output
+```
+
+Indeed, we observe that the resulting data frame from the merge function provides the same information as the inner_join function, but lacks the joining by message. Another observation is that the merge function doesn't appear to preserve the original variable order. For example, from the output for the merge function, we see that drink_type is the first column, while we originally had the name of the drink as the first column of the overpriced_coffee_shop_menu data frame. Additionally, we observe that the row order that has been produced by the merge function is different than the row order produced by the inner_join function. Recall that the inner_join function returns all rows from overpriced_coffee_shop_menu where there are matching values in coffee_brand, and hence it will keep the row order of overpriced_coffee_shop_menu.
+
+One solution to fix the column order is to write an line of code that specifies the column order after the merge function. First, I think we should store the merge variable data frame in a variable, say `new_coffee_df` for an example. Then, the simple line of code to add would be something like `new_coffee_df = new_coffee_df[c(2,1,3,4)]`. That code specifies that the second column of the original output of the merge function goes first, then the 1st column from the original merge function output, etc. We can see that we could make our lives easier by just using dplyr's merge function instead.
+
+A solution to incorporate the original row order in the merge function from [here](https://www.r-statistics.com/2012/01/merging-two-data-frame-objects-while-preserving-the-rows-order/) is to create a new function merge.with.order that has a keep_order parameter. If you have a look at the link, it looks like a pain to create a whole new function just to keep the row order. It is much easier to just use the dplyr inner_join function and bypass that problem all together.
+
+### full_join vs corresponding merge function
+
+As the creater of dplyr said on [this](https://github.com/tidyverse/dplyr/issues/797) Github issue, the outer join function should be renamed to full_join() "because left and right joins are also outer joins". Hence, we will refer to the full_join function and compare it to the merge function equivalent as stated in the above table.
+
+Recall that we performed the full_join function of the overpriced_coffee_shop_menu and coffee_brand data frames.
+
+```{r}
+(full_join(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type")) # use the full_join function to join the two tibbles and show output
+```
+
+Next, let's see base R merge function equvialent. Note that for the merge function to be equivalent we must pass `all = TRUE` in the merge function.
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type", all = TRUE)) # use the merge function to join the two tibbles and show output
+```
+
+What do we see in terms of similarities and differences for the outputs of the two functions? First off, is the information contained in the two tables the same? Yes. We have the 7 coffee shop beverages listed along with a NA for the decaf drip coffee drink_type. All the relevant information including drink_type, price ($) and brand is listed for those drinks in their own columns. The major differences are that the row order of the original overpriced_coffee_shop_menu was not preserved and column order is not the same as the data frames (ie. it is not just tacking on coffee_brand columns to overpriced_coffee_shop_menu). In both merge functions we've seen so far, it seems that the first column is the variable that the tibbles were joined by.
+
+### left_join vs corresponding merge function
+
+Recall that we performed the left_join function of the overpriced_coffee_shop_menu and coffee_brand data frames before. I will restate that code and its output below for completeness. 
+
+```{r}
+(left_join(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type")) # use the left_join function to join the two tibbles and show output
+```
+
+I will follow up by writing the code and producing the output for the corresponding merge function for left_join. Note that we must specify `all.x = TRUE` in the merge function for it to be equivalent to dplyr's left_join function because we return all rows from x in the left_join function.
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type", all.x = TRUE)) # use the merge function to join the two tibbles and show output
+
+```
+
+Ok. What do we see for differences and similarities in the output produced from the above two functions? First, is the information contained in both output data frames the same? Yes. The seven drinks latte, cappuccino, americano, cafe_mocha, ice_coffe, plain_ol_coffee, and cuppa tea and their elements in drink_type, price ($) and brand are all there. The row and column order are the immediately identifiable differences between the two tables. Specifically, we note that the row order from the merge function was not the same as the original data frame row order in overpriced_coffee_shop_menu. Additionally, the column order produced by the merge function is different than the column order produced by the left_join function. The pattern that drink_type is the first column in the merge function, continues.
+
+### right_join vs corresponding merge function
+
+Since the left_join and right_join base R merge functions are symmetric in their design That is, all that is changed is that instaed of all.x = TRUE, put all.y = TRUE in the merge function to get the right_join merge function equivalent. I will leave the detailed comparison of the dplyr merge function and the right_join merge function equivalent to the reader. My remarks below will be brief.
+
+Here is the dplyr right_join function output for combining overpriced_coffee_shop_menu and coffee_brand by drink type.
+
+```{r}
+(right_join(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type")) # use the right_join function to join the two tibbles and show output
+```
+
+The base R merge function equivalent is below:
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type", all.y = TRUE)) # use the merge function to join the two tibbles and show output
+```
+
+Again, the information contained in the two data frames is the same, but the row and column order of the data frame produced by the merge function doesn't preserve the structure of our original data frames.
+
+### cross join and the lack of a dplyr equivalent
+
+First, what is a cross join? A simple definition of this Cartesian join was found from [here](http://www.datasciencemadesimple.com/join-in-r-merge-in-r/).
+
+> A cross join results in every row of one table being joined to every row of another table
+
+Here is a visual depiction of that:
+
+![cross join](images/cross_join.jpg)
+
+Let's get on to trying the merge function cross join:
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand, by = NULL)) # use the merge function to join the two tibbles and show output
+```
+
+Now, one way to get around the lack of the cross join function in dplyr as explored in [this recent blog post](http://jarrettmeyer.com/2018/07/10/cross-join-dplyr) is to "create a fake data column and use the full join function", but that sounds like more code than I would like to type.
+
+Instead, we will look at a simpler and more elegant way, which is to use the crossing function from the tidyr package.
+
+```{r}
+library(tidyr) # load tidyr package
+
+crossing(overpriced_coffee_shop_menu, coffee_brand) # This is literally all we have to do to get the Cartesian product.
+```
+
+So, what are the differences between the two functions? Well, the merge cross join specified drink_type.x and drink_type.y that were crossed. On the other hand, it doesn't look like the crossing function specifies the drink types that were crossed. The other noticeable difference is that the crossing function put the rows together by the drink name. For example, all three of the latte rows are together, then all three of the the cappuccino rows are next, etc. On the other hand, the merge cross join had the seven rows of drinks were in the order they appeared in overpriced_coffee_shop_menu and repeated that order to get the seven rows to appear three times total. 
+
+### So are the dplyr join functions superior to the base R merge function?
+
+The [creater of dplyr](https://groups.google.com/forum/#!topic/manipulatr/OuAPC4VyfIc) thinks so. He claims the inner_join, semi_join, left_join and right_join functions from the dplyr package are advantageous over the merge() function in that they are much faster than the merge() function from base R. The dplyr join functions also lets you know what you are merging by, if you don't specify that in the functions. Additionally, by using the dplyr join functions, the rows are kept in order.
+
+From our above analysis, we can vouch that the join functions tell you what you are merging by (if you don't specify) and that the rows are kept in order. Hence there are a few advantages of the join functions over the base R merge function. As we noted above, the dplyr join functions seem to lack a quick and easy Cartestian product function. So, it appears the scope of the dplyr join functions may not include a wide range of functions... yet (which makes sense because it is a relatively new package and is still being worked on).
+
+
+## Explore the base R function match()
+
+For my final analysis, I will examine the bae R function match(), which is similar to joins and merges, but is actually more of a "table lookup". I will look at the similarities and differences of the match function and the true join/merge.
+
+> match(x, table) returns a vector of the positions of (first) matches of vector 1 in vector 2. If the element of vector 1 does not exist in vector 2, NA is returned.
+
+What we should note about the match function is its arguments... x is a vector of the values to be matched, while table is a vector of values to be matched against.
+
+Let's try it out on our overpriced_coffee_shop_menu and coffee_brand data frames! We have to be careful to specify what variable we want to match... Let's see what happens if we just try the match function on both data frames.
+
+```{r}
+match(overpriced_coffee_shop_menu, coffee_brand) # try match on both data frames... rookie mistake.
+```
+
+We get NA NA NA. That is not very helpful nor insightful. We shall try again, but this time use the $ sign to specify what exactly we are wanting to match. We choose to match drink_type because that is the common denominator between the two data frames, so that makes the most sense.
+
+First, have a quick refresher look at both data frame drink types to see their order
+
+```{r}
+overpriced_coffee_shop_menu$drink_type # drink types in overpriced_coffee_shop_menu data frame
+```
+
+```{r}
+coffee_brand$drink_type # drink types in coffee_brand data frame
+```
+
+We can compare the match function to something we may have already seen in R, which is the %in% operator to make it easier to understand. 
+
+You can see that the following two lines give us the same output:
+
+```{r}
+overpriced_coffee_shop_menu$drink_type %in% coffee_brand$drink_type # what we are looking for is what drink types from the overpriced_coffee_shop_menu are found in coffee_brand drink types
+```
+
+We get a false for the last entry because there is no tea drink_type found in coffee_brand.
+
+```{r}
+(match_in <- match(overpriced_coffee_shop_menu$drink_type, coffee_brand$drink_type, nomatch = 0))
+# we specify that nomatch = 0 here, meaning if we have no match, we get a 0 for instead of a NA.
+# hence, the output here is 1 1 1 1 2 2 0 
+
+match_in > 0 # look forwhere match is greater than 0. For each value we find that is > 0, it prints a TRUE, otherwise it prints FALSE
+# hence, output is  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+```
+
+Now that our understanding of the match function is a little better, let's try to match the drink_type for overpriced_coffee_shop_menu in coffee_brand and see what the result is.
+
+```{r}
+(match_ocs_cb <- match(overpriced_coffee_shop_menu$drink_type, coffee_brand$drink_type)) # try match the drink_type 
+```
+
+Ok. Now we got something to work with! Now what does that output mean? Well, according to the above definition of the match function, the vector that is returned has the positions of 1st matches of vector 1 in vector 2 (and if the element of vector 1 DNE in vector 2, NA is returned). So, we can interpret the output to mean that the 1st match for the espresso-based drink_type is 1 and then we get three more 1s beacuse the next three elements in `overpriced_coffee_shop_menu$drink_type` are espresso-based. After that, we get two 2s because the next two elements in the `overpriced_coffee_shop_menu$drink_type` are caffinated drip coffee. Finally, tea in the `overpriced_coffee_shop_menu$drink_type` has no match in `coffee_brand$drink_type`, hence we get the NA.
+
+We can use match to join the two data frames by using the base R match function in combination with cbind (column bind function). What we are doing below is matching the coffee_brands into the overpriced_coffee_shop_menu. Note I drew from [here](https://www.r-bloggers.com/joining-data-frames-in-r/) for the below code.
+
+```{r}
+# match the coffee_brands into overpriced_coffee_shop_menu
+cbind(overpriced_coffee_shop_menu, coffee_brand[match_ocs_cb,]) 
+```
+
+**The Good:**
+We do have control over the order of the data frames when we use the cbind function. By using cbind carefully on the data frames, we can usually preserve the original variable order. So, the cbind() and match() method has an advantage over the merge function, in that the cbind() and match() method doesn't mess with our column order as much (or at least we know what to expect). Additionally, we have a little more control over the row order than the merge function (look below to recall what the merge function did to our row order). The row order for the cbind() and match() method looks pretty spot on like the row order of overpriced_coffee_shop_menu.
+
+```{r}
+(merge(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type", all.x = TRUE)) # use the merge function to join the two tibbles and show output
+```
+
+
+**The Bad with cbind() and match() and a fix:**
+The problem we get is that there is two drink_type columns. So, the simple left_join function (or merge with `all.x = TRUE`) is probably better here because we can see from the below output that there is only one drink_type column that pertains to the original overpriced_coffee_shop_menu data fram. We want the drink_type column that is from the overpriced_coffee_shop_menu because it makes more sense to have tea under drink_type rather than a NA.
+
+```{r}
+(left_join(overpriced_coffee_shop_menu, coffee_brand, by = "drink_type")) # use the left_join function to join the two tibbles and show output 
+```
+
+Although the cbind() and match() method has its merits, when we compare the the three outputs above, we can see that the best method would be to use the dplyr left_join function for this example.
