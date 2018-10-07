@@ -3,6 +3,45 @@ Stat545-HW04-Tidy-data-and-joins
 Rachel Lobay
 2018-10-02
 
+Table of contents
+=================
+
+-   [Cheat sheet for tidyr functions](#cheat-sheet-for-tidyr-functions)
+-   [Stop. How do we want to handle a data set in RStudio?](#stop.-how-do-we-want-to-handle-a-data-set-in-rstudio)
+-   [Quick refresher on dplyr](#quick-refresher-on-dplyr)
+    -   [filter() and select() functions](#filter-and-select-functions)
+        -   [select() function](#select-function)
+        -   [filter() function](#filter-function)
+    -   [Structure of tidyr](#structure-of-tidyr)
+    -   [Tidyr gather() and spread() functions](#tidyr-gather-and-spread-functions)
+        -   [gather() function](#gather-function)
+        -   [spread() function](#spread-function)
+        -   [Introducing the unite() function](#introducing-the-unite-function)
+-   [Cheatsheet for dplyr functions](#cheatsheet-for-dplyr-functions)
+    -   [inner\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#inner_joinoverpriced_coffee_shop_menu-coffee_brand)
+    -   [semi\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#semi_joinoverpriced_coffee_shop_menu-coffee_brand)
+    -   [left\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#left_joinoverpriced_coffee_shop_menu-coffee_brand)
+    -   [right\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#right_joinoverpriced_coffee_shop_menu-coffee_brand)
+    -   [anti\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#anti_joinoverpriced_coffee_shop_menu-coffee_brand)
+    -   [inner\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)](#inner_joincoffee_brand-overpriced_coffee_shop_menu)
+    -   [semi\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)](#semi_joincoffee_brand-overpriced_coffee_shop_menu)
+    -   [left\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)](#left_joincoffee_brand-overpriced_coffee_shop_menu)
+    -   [anti\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)](#anti_joincoffee_brand-overpriced_coffee_shop_menu)
+    -   [full\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#full_joinoverpriced_coffee_shop_menu-coffee_brand)
+-   [Activity 3: Optional add-on to previous exercises](#activity-3-optional-add-on-to-previous-exercises)
+    -   [Explore the base R function merge()](#explore-the-base-r-function-merge)
+        -   [inner\_join vs corresponding merge function](#inner_join-vs-corresponding-merge-function)
+        -   [full\_join vs corresponding merge function](#full_join-vs-corresponding-merge-function)
+        -   [left\_join vs corresponding merge function](#left_join-vs-corresponding-merge-function)
+        -   [right\_join vs corresponding merge function](#right_join-vs-corresponding-merge-function)
+        -   [cross join and the lack of a dplyr equivalent](#cross-join-and-the-lack-of-a-dplyr-equivalent)
+        -   [So are the dplyr join functions superior to the base R merge function?](#so-are-the-dplyr-join-functions-superior-to-the-base-r-merge-function)
+    -   [Explore the base R function merge()](#explore-the-base-r-function-merge)
+        -   [right\_join vs corresponding merge function](#right_join-vs-corresponding-merge-function)
+        -   [cross join and the lack of a dplyr equivalent](#cross-join-and-the-lack-of-a-dplyr-equivalent)
+        -   [So are the dplyr join functions superior to the base R merge function?](#so-are-the-dplyr-join-functions-superior-to-the-base-r-merge-function)
+    -   [Explore the base R function match()](#explore-the-base-r-function-match)
+
 Cheat sheet for tidyr functions
 ===============================
 
