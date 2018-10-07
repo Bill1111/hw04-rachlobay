@@ -7,7 +7,7 @@ Table of contents
 =================
 
 -   [Cheat sheet for tidyr functions](#cheat-sheet-for-tidyr-functions)
--   [Stop. How do we want to handle a data set in RStudio?](#stop.-how-do-we-want-to-handle-a-data-set-in-rstudio)
+-   [Stop. How do we want to handle a data set in RStudio?](#stop-how-do-we-want-to-handle-a-data-set-in-rstudio)
 -   [Quick refresher on dplyr](#quick-refresher-on-dplyr)
     -   [filter() and select() functions](#filter-and-select-functions)
         -   [select() function](#select-function)
