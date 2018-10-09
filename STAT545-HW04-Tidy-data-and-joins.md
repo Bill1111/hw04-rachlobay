@@ -611,45 +611,7 @@ right\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 
 Using right\_join(overpriced\_coffee\_shop\_menu, coffee\_brand), what we are doing is returning all the rows from coffee\_brand and all the columns from overpriced\_coffee\_shop\_menu and coffee\_brand. Hence, om the output, we can see that we now just have the six coffee drinks and no cuppa\_tea row because cuppa\_tea did not have a row listed in the coffee\_brand tibble.
 
-I will display the left\_join function result and the right\_join function result side-by-side for easy comparison. Again, I will use the grobTable to achieve this. The left\_join function result will be on the left, while the right\_join function result will be on the right.
-
-``` r
-lj_Grobtable <- tableGrob(lj_csm_cb, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.55)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.55)), 
-    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform ljcsm into a tableGrob
-
-# add title to lj_Grobtable
-title <- textGrob("left_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-lj_Grobtable <- gtable_add_rows(
-  lj_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-lj_Grobtable <- gtable_add_grob(
-  lj_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(lj_Grobtable)
-)
-
-
-rj_Grobtable <- tableGrob(rj_csm_cb, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.55)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.55)), 
-    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform rjcsm into a tableGrob
-
-# add title to rj_Grobtable
-title <- textGrob("right_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-rj_Grobtable <- gtable_add_rows(
-  rj_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-rj_Grobtable <- gtable_add_grob(
-  rj_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(rj_Grobtable)
-)
-
-
-grid.arrange(lj_Grobtable, rj_Grobtable, nrow=1) # display tables side-by-side
-```
+I will display the left\_join function result and the right\_join function result side-by-side for easy comparison. Again, I will use the grobTable to achieve this. The left\_join function result will be on the left, while the right\_join function result will be on the right. Also, note that I hid the code because it is basically the same as when we looked at semi\_join and inner\_join side-by-side. I will hide the code in future examples if it is basically the same as previous code blocks.
 
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
@@ -675,7 +637,7 @@ anti\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 
 We can see from the anti\_join function output that the only row the overpriced\_coffee\_shop\_menu tibble where there is nomatching values in coffee\_brand is the tea row. Hence, the tea row was the only row in the output (with its column values for drink\_type and `price ($)` from overpriced\_coffee\_shop\_menu).
 
-I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. Also, note that I hid the code because it is basically the same as when we looked at left\_join and right\_join side-by-side.
+I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions.
 
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-21-1.png)
 

@@ -396,9 +396,9 @@ Using left_join(overpriced_coffee_shop_menu, coffee_brand), what we get is the o
 Using right_join(overpriced_coffee_shop_menu, coffee_brand), what we are doing is returning all the rows from coffee_brand and all the columns from overpriced_coffee_shop_menu and coffee_brand.
 Hence, om the output, we can see that we now just have the six coffee drinks and no cuppa_tea row because cuppa_tea did not have a row listed in the coffee_brand tibble.
 
-I will display the left_join function result and the right_join function result side-by-side for easy comparison. Again, I will use the grobTable to achieve this. The left_join function result will be on the left, while the right_join function result will be on the right.
+I will display the left_join function result and the right_join function result side-by-side for easy comparison. Again, I will use the grobTable to achieve this. The left_join function result will be on the left, while the right_join function result will be on the right. Also, note that I hid the code because it is basically the same as when we looked at semi_join and inner_join side-by-side. I will hide the code in future examples if it is basically the same as previous code blocks.
 
-```{r}
+```{r echo=FALSE}
 lj_Grobtable <- tableGrob(lj_csm_cb, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.55)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.55)), 
@@ -451,7 +451,7 @@ From the side-by-side comparison of the left_join and right_join function result
 
 We can see from the anti_join function output that the only row the overpriced_coffee_shop_menu tibble where there is nomatching values in coffee_brand is the tea row. Hence, the tea row was the only row in the output (with its column values for drink_type and `price ($)` from overpriced_coffee_shop_menu).
 
-I will aim to show this clearly by displaying the original tables of overpriced_coffee_shop_menu and coffee_brand close to the anti_join reslt for you to see the impact of the anti_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. Also, note that I hid the code because it is basically the same as when we looked at left_join and right_join side-by-side.
+I will aim to show this clearly by displaying the original tables of overpriced_coffee_shop_menu and coffee_brand close to the anti_join reslt for you to see the impact of the anti_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. 
 
 ```{r echo=FALSE}
 layout <- rbind(c(1,2),
