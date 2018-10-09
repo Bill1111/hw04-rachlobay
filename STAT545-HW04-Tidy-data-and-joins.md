@@ -45,7 +45,7 @@ Table of contents
 Cheat sheet for tidyr functions
 ===============================
 
-A very helpful RStudio cheat sheet on tidyr functions and data wrangling can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Refer to that guide if you have any immediate questions. It will probably help :smile: My cheat sheet aims to be a highlight reel of that guide along with answering a few other interesting questions. Hence, I will use a few images from the RStudio guide in my own cheat sheet.
+A very helpful RStudio cheat sheet on tidyr functions and data wrangling can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Refer to that guide if you have any immediate questions. It will probably help :smile: My cheat sheet aims to be a highlight reel of that guide along with answering a few other interesting questions. Hence, I will use some of the images from the RStudio guide in my own cheat sheet.
 
 Stop. How do we want to handle a data set in RStudio?
 =====================================================
@@ -223,62 +223,61 @@ We will put the Sugars, `Protein (g)` and Fat data (which were all measured in g
 cereal_subset_Nabisco_long <- cereal_subset_Nabisco %>% 
   gather(key = "Nutrients", value = Values(g), 3:5) # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
 
-cereal_subset_Nabisco_long # Let's see what happened!
+cereal_subset_Nabisco_long %>% # Let's see what happened!
+  kable() # kable table it!
 ```
 
-    ## # A tibble: 18 x 6
-    ##    `Cereal Name`  Manufacturer   Fat `Display Shelf` Nutrients `Values(g)`
-    ##    <chr>          <chr>        <int>           <int> <chr>           <int>
-    ##  1 100%_Bran      Nabisco          1               3 Calories           70
-    ##  2 Cream_of_Whea… Nabisco          0               2 Calories          100
-    ##  3 Shredded_Wheat Nabisco          0               1 Calories           80
-    ##  4 Shredded_Whea… Nabisco          0               1 Calories           90
-    ##  5 Shredded_Whea… Nabisco          0               1 Calories           90
-    ##  6 Strawberry_Fr… Nabisco          0               2 Calories           90
-    ##  7 100%_Bran      Nabisco          1               3 Sugars              6
-    ##  8 Cream_of_Whea… Nabisco          0               2 Sugars              0
-    ##  9 Shredded_Wheat Nabisco          0               1 Sugars              0
-    ## 10 Shredded_Whea… Nabisco          0               1 Sugars              0
-    ## 11 Shredded_Whea… Nabisco          0               1 Sugars              0
-    ## 12 Strawberry_Fr… Nabisco          0               2 Sugars              5
-    ## 13 100%_Bran      Nabisco          1               3 Protein …           4
-    ## 14 Cream_of_Whea… Nabisco          0               2 Protein …           3
-    ## 15 Shredded_Wheat Nabisco          0               1 Protein …           2
-    ## 16 Shredded_Whea… Nabisco          0               1 Protein …           3
-    ## 17 Shredded_Whea… Nabisco          0               1 Protein …           3
-    ## 18 Strawberry_Fr… Nabisco          0               2 Protein …           2
+| Cereal Name                  | Manufacturer |  Fat|  Display Shelf| Nutrients   |  Values(g)|
+|:-----------------------------|:-------------|----:|--------------:|:------------|----------:|
+| 100%\_Bran                   | Nabisco      |    1|              3| Calories    |         70|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |    0|              2| Calories    |        100|
+| Shredded\_Wheat              | Nabisco      |    0|              1| Calories    |         80|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |    0|              1| Calories    |         90|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |    0|              1| Calories    |         90|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |    0|              2| Calories    |         90|
+| 100%\_Bran                   | Nabisco      |    1|              3| Sugars      |          6|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |    0|              2| Sugars      |          0|
+| Shredded\_Wheat              | Nabisco      |    0|              1| Sugars      |          0|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |    0|              1| Sugars      |          0|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |    0|              1| Sugars      |          0|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |    0|              2| Sugars      |          5|
+| 100%\_Bran                   | Nabisco      |    1|              3| Protein (g) |          4|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |    0|              2| Protein (g) |          3|
+| Shredded\_Wheat              | Nabisco      |    0|              1| Protein (g) |          2|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |    0|              1| Protein (g) |          3|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |    0|              1| Protein (g) |          3|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |    0|              2| Protein (g) |          2|
 
 We should get the same output if we specify the columns as a range from 3:5 because columns 3 - 5 in the cereal.subset.Nabisco tibble are the sugars, proteins and fat columns.
 
 ``` r
 cereal_subset_Nabisco_long2 <- cereal_subset_Nabisco %>% 
-  gather(key = "Nutrients", value = Values(g), Sugars, `Protein (g)`, Fat) # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
+  gather(key = "Nutrients", value = Values(g), Sugars, `Protein (g)`, Fat)  # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
 
-cereal_subset_Nabisco_long2
+cereal_subset_Nabisco_long2 %>% 
+  kable() # kable table it!
 ```
 
-    ## # A tibble: 18 x 6
-    ##    `Cereal Name` Manufacturer Calories `Display Shelf` Nutrients
-    ##    <chr>         <chr>           <int>           <int> <chr>    
-    ##  1 100%_Bran     Nabisco            70               3 Sugars   
-    ##  2 Cream_of_Whe… Nabisco           100               2 Sugars   
-    ##  3 Shredded_Whe… Nabisco            80               1 Sugars   
-    ##  4 Shredded_Whe… Nabisco            90               1 Sugars   
-    ##  5 Shredded_Whe… Nabisco            90               1 Sugars   
-    ##  6 Strawberry_F… Nabisco            90               2 Sugars   
-    ##  7 100%_Bran     Nabisco            70               3 Protein …
-    ##  8 Cream_of_Whe… Nabisco           100               2 Protein …
-    ##  9 Shredded_Whe… Nabisco            80               1 Protein …
-    ## 10 Shredded_Whe… Nabisco            90               1 Protein …
-    ## 11 Shredded_Whe… Nabisco            90               1 Protein …
-    ## 12 Strawberry_F… Nabisco            90               2 Protein …
-    ## 13 100%_Bran     Nabisco            70               3 Fat      
-    ## 14 Cream_of_Whe… Nabisco           100               2 Fat      
-    ## 15 Shredded_Whe… Nabisco            80               1 Fat      
-    ## 16 Shredded_Whe… Nabisco            90               1 Fat      
-    ## 17 Shredded_Whe… Nabisco            90               1 Fat      
-    ## 18 Strawberry_F… Nabisco            90               2 Fat      
-    ## # ... with 1 more variable: `Values(g)` <int>
+| Cereal Name                  | Manufacturer |  Calories|  Display Shelf| Nutrients   |  Values(g)|
+|:-----------------------------|:-------------|---------:|--------------:|:------------|----------:|
+| 100%\_Bran                   | Nabisco      |        70|              3| Sugars      |          6|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |       100|              2| Sugars      |          0|
+| Shredded\_Wheat              | Nabisco      |        80|              1| Sugars      |          0|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |        90|              1| Sugars      |          0|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |        90|              1| Sugars      |          0|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |        90|              2| Sugars      |          5|
+| 100%\_Bran                   | Nabisco      |        70|              3| Protein (g) |          4|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |       100|              2| Protein (g) |          3|
+| Shredded\_Wheat              | Nabisco      |        80|              1| Protein (g) |          2|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |        90|              1| Protein (g) |          3|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |        90|              1| Protein (g) |          3|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |        90|              2| Protein (g) |          2|
+| 100%\_Bran                   | Nabisco      |        70|              3| Fat         |          1|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |       100|              2| Fat         |          0|
+| Shredded\_Wheat              | Nabisco      |        80|              1| Fat         |          0|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |        90|              1| Fat         |          0|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |        90|              1| Fat         |          0|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |        90|              2| Fat         |          0|
 
 Booyah! We got the same output, so either way works.
 
@@ -289,26 +288,24 @@ Suppose an Australian and an American go shopping for breakfast cereal. So, we w
 ``` r
 cereal_subset_Nabisco %>% 
   mutate(kilojoules = Calories * 4.184) %>%  # convert Calories to kilojoules by multiplying the calories by 4.184
-  gather(key = "Energy Measurement", value = "Energy Count", Calories, kilojoules) # gather Calories and kilojoules into a column called Energy Measurement and put their values in a column called Energy Count
+  gather(key = "Energy Measurement", value = "Energy Count", Calories, kilojoules) %>% # gather Calories and kilojoules into a column called Energy Measurement and put their values in a column called Energy Count
+  kable() # kable table it!
 ```
 
-    ## # A tibble: 12 x 8
-    ##    `Cereal Name` Manufacturer Sugars `Protein (g)`   Fat `Display Shelf`
-    ##    <chr>         <chr>         <int>         <int> <int>           <int>
-    ##  1 100%_Bran     Nabisco           6             4     1               3
-    ##  2 Cream_of_Whe… Nabisco           0             3     0               2
-    ##  3 Shredded_Whe… Nabisco           0             2     0               1
-    ##  4 Shredded_Whe… Nabisco           0             3     0               1
-    ##  5 Shredded_Whe… Nabisco           0             3     0               1
-    ##  6 Strawberry_F… Nabisco           5             2     0               2
-    ##  7 100%_Bran     Nabisco           6             4     1               3
-    ##  8 Cream_of_Whe… Nabisco           0             3     0               2
-    ##  9 Shredded_Whe… Nabisco           0             2     0               1
-    ## 10 Shredded_Whe… Nabisco           0             3     0               1
-    ## 11 Shredded_Whe… Nabisco           0             3     0               1
-    ## 12 Strawberry_F… Nabisco           5             2     0               2
-    ## # ... with 2 more variables: `Energy Measurement` <chr>, `Energy
-    ## #   Count` <dbl>
+| Cereal Name                  | Manufacturer |  Sugars|  Protein (g)|  Fat|  Display Shelf| Energy Measurement |  Energy Count|
+|:-----------------------------|:-------------|-------:|------------:|----:|--------------:|:-------------------|-------------:|
+| 100%\_Bran                   | Nabisco      |       6|            4|    1|              3| Calories           |         70.00|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |       0|            3|    0|              2| Calories           |        100.00|
+| Shredded\_Wheat              | Nabisco      |       0|            2|    0|              1| Calories           |         80.00|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |       0|            3|    0|              1| Calories           |         90.00|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |       0|            3|    0|              1| Calories           |         90.00|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |       5|            2|    0|              2| Calories           |         90.00|
+| 100%\_Bran                   | Nabisco      |       6|            4|    1|              3| kilojoules         |        292.88|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |       0|            3|    0|              2| kilojoules         |        418.40|
+| Shredded\_Wheat              | Nabisco      |       0|            2|    0|              1| kilojoules         |        334.72|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |       0|            3|    0|              1| kilojoules         |        376.56|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |       0|            3|    0|              1| kilojoules         |        376.56|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |       5|            2|    0|              2| kilojoules         |        376.56|
 
 ### spread() function
 
@@ -326,19 +323,18 @@ Using the cereal.subset.Nabisco.long data and the spread() function, we will put
 cereal_subset_Nabisco_wide <- cereal_subset_Nabisco_long %>%
   spread(key = "Nutrients", value = "Values(g)") # puts the nutrients  Fat, `Protein (g)`, and Sugars each into their own columns
 
-cereal_subset_Nabisco_wide
+cereal_subset_Nabisco_wide %>% 
+  kable() # kable table it!
 ```
 
-    ## # A tibble: 6 x 7
-    ##   `Cereal Name` Manufacturer   Fat `Display Shelf` Calories `Protein (g)`
-    ##   <chr>         <chr>        <int>           <int>    <int>         <int>
-    ## 1 100%_Bran     Nabisco          1               3       70             4
-    ## 2 Cream_of_Whe… Nabisco          0               2      100             3
-    ## 3 Shredded_Whe… Nabisco          0               1       80             2
-    ## 4 Shredded_Whe… Nabisco          0               1       90             3
-    ## 5 Shredded_Whe… Nabisco          0               1       90             3
-    ## 6 Strawberry_F… Nabisco          0               2       90             2
-    ## # ... with 1 more variable: Sugars <int>
+| Cereal Name                  | Manufacturer |  Fat|  Display Shelf|  Calories|  Protein (g)|  Sugars|
+|:-----------------------------|:-------------|----:|--------------:|---------:|------------:|-------:|
+| 100%\_Bran                   | Nabisco      |    1|              3|        70|            4|       6|
+| Cream\_of\_Wheat\_(Quick)    | Nabisco      |    0|              2|       100|            3|       0|
+| Shredded\_Wheat              | Nabisco      |    0|              1|        80|            2|       0|
+| Shredded\_Wheat\_'n'Bran     | Nabisco      |    0|              1|        90|            3|       0|
+| Shredded\_Wheat\_spoon\_size | Nabisco      |    0|              1|        90|            3|       0|
+| Strawberry\_Fruit\_Wheats    | Nabisco      |    0|              2|        90|            2|       5|
 
 So, the Nutrients column has now been split back into the Fat, `Protein (g)`, and Sugars columns as we originally had. Note that the order of the columns is now different. It makes sense that the appears that the Fat, `Protein (g)`, and Sugars columns appeared after the `Display Shelf` column because the Nutrients column was after the `Display Shelf` column in the cereal.subset.Nabisco.long tibble. Also, observe that the columns Fat, `Protein (g)`, and Sugars have been sorted alphabetically in the new cereal.subset.Nabisco.wide tibble. We don't have the original order Sugars, `Protein (g)` and Fat that we had in the cereal.subset.Nabisco tibble.
 
@@ -412,19 +408,19 @@ overpriced_coffee_shop_menu <- read_csv(overpriced_coffee_shop_menu, skip = 1)
 
 overpriced_coffee_shop_menu$`price ($)` <- formatC(overpriced_coffee_shop_menu$`price ($)`, format = 'f', flag='0', digits = 2) # make sure price_in_dollars is to two decimal places
 
-(overpriced_coffee_shop_menu) # Let's see the overpriced coffee shop menu!
+overpriced_coffee_shop_menu %>% 
+  kable() # Let's see the overpriced coffee shop menu in kable table form!
 ```
 
-    ## # A tibble: 7 x 3
-    ##   name            drink_type             `price ($)`
-    ##   <chr>           <chr>                  <chr>      
-    ## 1 latte           espresso-based         6.00       
-    ## 2 cappuccino      espresso-based         6.00       
-    ## 3 americano       espresso-based         5.00       
-    ## 4 cafe_mocha      espresso-based         6.50       
-    ## 5 ice_coffee      caffinated drip coffee 4.00       
-    ## 6 plain_ol_coffee caffinated drip coffee 4.00       
-    ## 7 cuppa_tea       tea                    3.00
+| name              | drink\_type            | price ($) |
+|:------------------|:-----------------------|:----------|
+| latte             | espresso-based         | 6.00      |
+| cappuccino        | espresso-based         | 6.00      |
+| americano         | espresso-based         | 5.00      |
+| cafe\_mocha       | espresso-based         | 6.50      |
+| ice\_coffee       | caffinated drip coffee | 4.00      |
+| plain\_ol\_coffee | caffinated drip coffee | 4.00      |
+| cuppa\_tea        | tea                    | 3.00      |
 
 Next, I will construct a csv for the drink brand for the three drink types, espress-based, tea, and drip coffee.
 
@@ -436,15 +432,17 @@ coffee_brand <- "
     decaf drip coffee, Maxwell House
 "
 
-(coffee_brand <- read_csv(coffee_brand, skip = 1))
+coffee_brand <- read_csv(coffee_brand, skip = 1)
+
+coffee_brand %>% 
+  kable() # Let's see the coffee brand table in kable form!
 ```
 
-    ## # A tibble: 3 x 2
-    ##   drink_type             brand               
-    ##   <chr>                  <chr>               
-    ## 1 espresso-based         Lavazza Super Crema 
-    ## 2 caffinated drip coffee Kicking Horse Coffee
-    ## 3 decaf drip coffee      Maxwell House
+| drink\_type            | brand                |
+|:-----------------------|:---------------------|
+| espresso-based         | Lavazza Super Crema  |
+| caffinated drip coffee | Kicking Horse Coffee |
+| decaf drip coffee      | Maxwell House        |
 
 You will observe that my cheatsheet is structured and patterened after [Jenny's cheatsheet](http://stat545.com/bit001_dplyr-cheatsheet.html). Also, note that the definitions I will refer to for each of the join functions are from [here](https://dplyr.tidyverse.org/reference/join.html).
 
@@ -677,62 +675,7 @@ anti\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 
 We can see from the anti\_join function output that the only row the overpriced\_coffee\_shop\_menu tibble where there is nomatching values in coffee\_brand is the tea row. Hence, the tea row was the only row in the output (with its column values for drink\_type and `price ($)` from overpriced\_coffee\_shop\_menu).
 
-I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions.
-
-``` r
-layout <- rbind(c(1,2),
-                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
-
-ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
-
-# add title to ocsm_Grobtable
-title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-ocsm_Grobtable <- gtable_add_rows(
-  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-ocsm_Grobtable <- gtable_add_grob(
-  ocsm_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(ocsm_Grobtable)
-)
-
-coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
-
-# add title to coffee_brand_Grobtable
-title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-coffee_brand_Grobtable <- gtable_add_rows(
-  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-coffee_brand_Grobtable<- gtable_add_grob(
-  coffee_brand_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
-)
-
-aj_csm_cb_Grobtable <- tableGrob(aj_csm_cb, theme=ttheme_default(    
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform aj_csm_cb into a tableGrob
-
-# add title to fjcsm_Grobtable
-title <- textGrob("anti_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-aj_csm_cb_Grobtable <- gtable_add_rows(
-  aj_csm_cb_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-aj_csm_cb_Grobtable <- gtable_add_grob(
-  aj_csm_cb_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(aj_csm_cb_Grobtable)
-)
-
-grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, aj_csm_cb_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
-```
+I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. Also, note that I hid the code because it is basically the same as when we looked at left\_join and right\_join side-by-side.
 
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
@@ -785,44 +728,6 @@ semi\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 We can see here that when we set x = coffee\_brand and y = overpriced\_coffee\_shop\_menu, the resulting tibble is very similar to the tibble for coffee\_brand. The major difference is that the semi\_join function results in a loss of the decaf drip coffee row, which was under drink\_type in the coffee\_brand tibble. This is because there is no drink\_type that is listed as decaf drip coffee in overpriced\_coffee\_shop\_menu.
 
 I will display the semi\_join() and the inner\_join() function results side-by-side for you to see the difference in output from using each the functions.
-
-``` r
-sj_Grobtable <- tableGrob(sj_cb_csm, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.55)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.55)), 
-    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform sj_cb_csm into a tableGrob
-
-# add title to sj_Grobtable
-title <- textGrob("semi_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-sj_Grobtable <- gtable_add_rows(
-  sj_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-sj_Grobtable <- gtable_add_grob(
-  sj_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(sj_Grobtable)
-)
-
-
-ij_Grobtable <- tableGrob(ij_cb_csm, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.55)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.55)), 
-    rowhead = list(fg_params=list(cex = 0.55)), rows=NULL))  # transform ijcsm into a tableGrob
-
-# add title to ij_Grobtable
-title <- textGrob("inner_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-ij_Grobtable <- gtable_add_rows(
-  ij_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-ij_Grobtable <- gtable_add_grob(
-  ij_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(ij_Grobtable)
-)
-
-
-grid.arrange(sj_Grobtable, ij_Grobtable, nrow=1) # display tables side-by-side
-```
 
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
@@ -933,61 +838,6 @@ What we expect to see from the anti\_join function when we put x = coffee\_brand
 
 Again, I will display the anti\_join() function close to the original two tables (overpriced\_coffee\_shop\_menu and coffee\_brand) for you to get a visual idea of how the anti\_join() function works.
 
-``` r
-layout <- rbind(c(1,2),
-                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
-
-ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
-
-# add title to ocsm_Grobtable
-title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-ocsm_Grobtable <- gtable_add_rows(
-  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-ocsm_Grobtable <- gtable_add_grob(
-  ocsm_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(ocsm_Grobtable)
-)
-
-coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
-
-# add title to coffee_brand_Grobtable
-title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-coffee_brand_Grobtable <- gtable_add_rows(
-  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-coffee_brand_Grobtable<- gtable_add_grob(
-  coffee_brand_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
-)
-
-aj_cb_csm_Grobtable <- tableGrob(aj_cb_csm, theme=ttheme_default(    
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform aj_csm_cb into a tableGrob
-
-# add title to fjcsm_Grobtable
-title <- textGrob("anti_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-aj_cb_csm_Grobtable <- gtable_add_rows(
-  aj_cb_csm_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-aj_cb_csm_Grobtable <- gtable_add_grob(
-  aj_cb_csm_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(aj_cb_csm_Grobtable)
-)
-
-grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, aj_cb_csm_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
-```
-
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-28-1.png)
 
 full\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
@@ -1018,61 +868,6 @@ full\_join(x, y): Return all rows and all columns from both x and y. Where there
 In the output, we see that we have all the rows from overpriced\_coffee\_shop\_menu and a new row from coffee\_brand for decaf drip coffee. So, we get all variables from the overpriced\_coffee\_shop\_menu and the coffee\_brand tibbles. Any of the rows that contain information from only one of the tibbles has NA under the variables from the other tibble.
 
 Let's compare the full\_join table with the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand to see the impact of the full\_join function. Again, I will use tableGrob and grid.arrage() to arrange these tables for an easy viewing experience.
-
-``` r
-layout <- rbind(c(1,2),
-                (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
-
-ocsm_Grobtable <- tableGrob(overpriced_coffee_shop_menu, theme=ttheme_default(   
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL)) # transform overpriced_coffee_shop_menu into a tableGrob
-
-# add title to ocsm_Grobtable
-title <- textGrob("overpriced coffee shop menu", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-ocsm_Grobtable <- gtable_add_rows(
-  ocsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-ocsm_Grobtable <- gtable_add_grob(
-  ocsm_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(ocsm_Grobtable)
-)
-
-coffee_brand_Grobtable <- tableGrob(coffee_brand, theme=ttheme_default(
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform coffee_brand into a tableGrob
-
-# add title to coffee_brand_Grobtable
-title <- textGrob("coffee brand table", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-coffee_brand_Grobtable <- gtable_add_rows(
-  coffee_brand_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-coffee_brand_Grobtable<- gtable_add_grob(
-  coffee_brand_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(coffee_brand_Grobtable)
-)
-
-fjcsm_Grobtable <- tableGrob(fjcsm, theme=ttheme_default(    
-    core = list(fg_params=list(cex = 0.7)), # smaller table text size
-    colhead = list(fg_params=list(cex = 0.7)), 
-    rowhead = list(fg_params=list(cex = 0.7)), rows = NULL))  # transform fjcsm into a tableGrob
-
-# add title to fjcsm_Grobtable
-title <- textGrob("full_join function result", gp = gpar(fontsize = 10))
-padding <- unit(0.5,"line")
-fjcsm_Grobtable <- gtable_add_rows(
-  fjcsm_Grobtable, heights = grobHeight(title) + padding, pos = 0
-)
-fjcsm_Grobtable <- gtable_add_grob(
-  fjcsm_Grobtable, list(title),
-  t = 1, l = 1, r = ncol(fjcsm_Grobtable)
-)
-
-grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, fjcsm_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
-```
 
 ![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-30-1.png)
 

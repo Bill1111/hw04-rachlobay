@@ -46,7 +46,7 @@ always_allow_html: yes
      
 # Cheat sheet for tidyr functions
 
-A very helpful RStudio cheat sheet on tidyr functions and data wrangling can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Refer to that guide if you have any immediate questions. It will probably help :smile: My cheat sheet aims to be a highlight reel of that guide along with answering a few other interesting questions. Hence, I will use a few images from the RStudio guide in my own cheat sheet. 
+A very helpful RStudio cheat sheet on tidyr functions and data wrangling can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf). Refer to that guide if you have any immediate questions. It will probably help :smile: My cheat sheet aims to be a highlight reel of that guide along with answering a few other interesting questions. Hence, I will use some of the images from the RStudio guide in my own cheat sheet. 
 
 # Stop. How do we want to handle a data set in RStudio?
 
@@ -165,16 +165,18 @@ We will put the Sugars, `Protein (g)` and Fat data (which were all measured in g
 cereal_subset_Nabisco_long <- cereal_subset_Nabisco %>% 
   gather(key = "Nutrients", value = Values(g), 3:5) # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
 
-cereal_subset_Nabisco_long # Let's see what happened!
+cereal_subset_Nabisco_long %>% # Let's see what happened!
+  kable() # kable table it!
 ```
 
 We should get the same output if we specify the columns as a range from 3:5 because columns 3 - 5 in the cereal.subset.Nabisco tibble are the sugars, proteins and fat columns. 
 
 ```{r}
 cereal_subset_Nabisco_long2 <- cereal_subset_Nabisco %>% 
-  gather(key = "Nutrients", value = Values(g), Sugars, `Protein (g)`, Fat) # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
+  gather(key = "Nutrients", value = Values(g), Sugars, `Protein (g)`, Fat)  # put sugars, proteins and fat (all in g) of Nabisco cereals into one column called Nutrients
 
-cereal_subset_Nabisco_long2
+cereal_subset_Nabisco_long2 %>% 
+  kable() # kable table it!
 ```
 
 Booyah! We got the same output, so either way works.
@@ -186,7 +188,8 @@ Suppose an Australian and an American go shopping for breakfast cereal. So, we w
 ```{r}
 cereal_subset_Nabisco %>% 
   mutate(kilojoules = Calories * 4.184) %>%  # convert Calories to kilojoules by multiplying the calories by 4.184
-  gather(key = "Energy Measurement", value = "Energy Count", Calories, kilojoules) # gather Calories and kilojoules into a column called Energy Measurement and put their values in a column called Energy Count
+  gather(key = "Energy Measurement", value = "Energy Count", Calories, kilojoules) %>% # gather Calories and kilojoules into a column called Energy Measurement and put their values in a column called Energy Count
+  kable() # kable table it!
   
 ```
 
@@ -207,7 +210,8 @@ Using the cereal.subset.Nabisco.long data and the spread() function, we will put
 cereal_subset_Nabisco_wide <- cereal_subset_Nabisco_long %>%
   spread(key = "Nutrients", value = "Values(g)") # puts the nutrients  Fat, `Protein (g)`, and Sugars each into their own columns
 
-cereal_subset_Nabisco_wide
+cereal_subset_Nabisco_wide %>% 
+  kable() # kable table it!
 ```
 
 So, the Nutrients column has now been split back into the Fat, `Protein (g)`, and Sugars columns as we originally had. Note that the order of the columns is now different. It makes sense that the appears that the Fat, `Protein (g)`, and Sugars columns appeared after the `Display Shelf` column because the Nutrients column was after the `Display Shelf` column in the cereal.subset.Nabisco.long tibble. Also, observe that the columns Fat, `Protein (g)`, and Sugars have been sorted alphabetically in the new cereal.subset.Nabisco.wide tibble. We don't have the original order Sugars, `Protein (g)` and Fat that we had in the cereal.subset.Nabisco tibble.
@@ -263,7 +267,8 @@ overpriced_coffee_shop_menu <- read_csv(overpriced_coffee_shop_menu, skip = 1)
 
 overpriced_coffee_shop_menu$`price ($)` <- formatC(overpriced_coffee_shop_menu$`price ($)`, format = 'f', flag='0', digits = 2) # make sure price_in_dollars is to two decimal places
 
-(overpriced_coffee_shop_menu) # Let's see the overpriced coffee shop menu!
+overpriced_coffee_shop_menu %>% 
+  kable() # Let's see the overpriced coffee shop menu in kable table form!
 
 ```
 
@@ -277,7 +282,10 @@ coffee_brand <- "
     decaf drip coffee, Maxwell House
 "
 
-(coffee_brand <- read_csv(coffee_brand, skip = 1))
+coffee_brand <- read_csv(coffee_brand, skip = 1)
+
+coffee_brand %>% 
+  kable() # Let's see the coffee brand table in kable form!
 ```
 
 You will observe that my cheatsheet is structured and patterened after [Jenny's cheatsheet](http://stat545.com/bit001_dplyr-cheatsheet.html). Also, note that the definitions I will refer to for each of the join functions are from [here](https://dplyr.tidyverse.org/reference/join.html). 
@@ -306,7 +314,6 @@ Notice that when we use the inner_join function, we miss the tea brand because t
 
 ```{r}
 (sj_csm_cb <- semi_join(overpriced_coffee_shop_menu, coffee_brand)) # use the semi_join function to join the two tibbles and show output
-
 
 ```
 
@@ -444,9 +451,9 @@ From the side-by-side comparison of the left_join and right_join function result
 
 We can see from the anti_join function output that the only row the overpriced_coffee_shop_menu tibble where there is nomatching values in coffee_brand is the tea row. Hence, the tea row was the only row in the output (with its column values for drink_type and `price ($)` from overpriced_coffee_shop_menu).
 
-I will aim to show this clearly by displaying the original tables of overpriced_coffee_shop_menu and coffee_brand close to the anti_join reslt for you to see the impact of the anti_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. 
+I will aim to show this clearly by displaying the original tables of overpriced_coffee_shop_menu and coffee_brand close to the anti_join reslt for you to see the impact of the anti_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions. Also, note that I hid the code because it is basically the same as when we looked at left_join and right_join side-by-side.
 
-```{r}
+```{r echo=FALSE}
 layout <- rbind(c(1,2),
                 (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
 
@@ -532,7 +539,7 @@ We can see here that when we set x = coffee_brand and y = overpriced_coffee_shop
 
 I will display the semi_join() and the inner_join() function results side-by-side for you to see the difference in output from using each the functions.
 
-```{r}
+```{r echo=FALSE}
 sj_Grobtable <- tableGrob(sj_cb_csm, theme=ttheme_default(
     core = list(fg_params=list(cex = 0.55)), # smaller table text size
     colhead = list(fg_params=list(cex = 0.55)), 
@@ -655,7 +662,7 @@ What we expect to see from the anti_join function when we put x = coffee_brand a
 
 Again, I will display the anti_join() function close to the original two tables (overpriced_coffee_shop_menu and coffee_brand) for you to get a visual idea of how the anti_join() function works. 
 
-```{r}
+```{r echo=FALSE}
 layout <- rbind(c(1,2),
                 (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
 
@@ -725,7 +732,7 @@ In the output, we see that we have all the rows from overpriced_coffee_shop_menu
 
 Let's compare the full_join table with the original tables of overpriced_coffee_shop_menu and coffee_brand to see the impact of the full_join function. Again, I will use tableGrob and grid.arrage() to arrange these tables for an easy viewing experience.
 
-```{r}
+```{r echo=FALSE}
 layout <- rbind(c(1,2),
                 (3)) # layout will have the original tables of overpriced_coffee_shop_menu and coffee_brand on top and then the full_join table underneath
 
