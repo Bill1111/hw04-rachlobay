@@ -19,6 +19,7 @@ always_allow_html: yes
         - [gather() function](#gather-function)
         - [spread() function](#spread-function)
         - [Introducing the unite() function](#introducing-the-unite-function)
+        - [Introducing the separate() function](#introducing-the-separate-function)
 - [Cheatsheet for dplyr functions](#cheatsheet-for-dplyr-functions)
      + [inner_join(overpriced_coffee_shop_menu, coffee_brand)](#inner_joinoverpriced_coffee_shop_menu-coffee_brand)
      + [semi_join(overpriced_coffee_shop_menu, coffee_brand)](#semi_joinoverpriced_coffee_shop_menu-coffee_brand)
@@ -181,7 +182,7 @@ cereal_subset_Nabisco_long2 %>%
 
 Booyah! We got the same output, so either way works.
 
-** Example 2: **
+**Example 2:**
 
 Suppose an Australian and an American go shopping for breakfast cereal. So, we want the kilojoules (kJ) listed as energy measurments of the Nabisco cereals as well as the Calories. We can first create a new column with the kilojoules displayed using the mutate() function. Then, we will use the gather() function to make one column called Energy Measure that will have both the Calories and kilojoules of the cereals. So, the value column will containt the number of Calories and the number of kilojoules for each cereal. By using the gather function, the data frame is ready for calculations.
 
@@ -234,7 +235,7 @@ head(manuf_shelf_subset) %>%
   kable() # kable table of head of data
 ```
 
-Excellent. The top few rows are from the top shelf. 
+Excellent. The top few rows (that have MANUFACTURERNAME_3) are from the top shelf.
 
 Now, let's check that the bottom few rows of the data to see that the brands are on the first shelf. 
 
@@ -244,6 +245,48 @@ tail(manuf_shelf_subset) %>%
 ```
 
 The tail table is looking good. Now, we should check the whole data set to make sure it runs from the top shelf to the bottom shelf, but I will leave that as a tedious exercise to the reader. 
+
+What we want to look for from the outputs if one particular manufacturer has top shelf, middle shelf or bottom shelf priority.
+
+```{r}
+table_manuf_shelf <- table(manuf_shelf_subset$Manufacturer_Shelf) # quick look at the count of the cereal on shelf distribution
+
+table_manuf_shelf[order(table_manuf_shelf)] %>% # order from lowest to highest count
+  kable() # kable table it!
+```
+
+From our quick inspection of the data, it appears that Kellogs has top-shelf priority as it has 12 cereals on the top shelf. General Mills is not too far behind with 9 cereals on the top shelf. As far as bottom shelf priority, Generall Mills wins with 6 cereals on the bottom shelf. Perhaps General Mills produces a lot of children's cereal, so certain children-targeted breakfast cereals are put within easy reach on the bottom shelf. This is pure speculation, but it is good to try to reason why the data is the way it is.
+
+### Introducing the separate() function
+
+The separate function does what it claims to do - it splits one column into multiple columns. It is the complement of the unite() function in tidyr.
+
+**Example:**
+
+A complementary example to our separate function example would be to try to separate the manufacturer and shelf column into separate columns. Let's try this below!
+
+```{r}
+manuf_shelf_subset %>% 
+  separate(Manufacturer_Shelf, c("Manufacturer", "Shelf"), sep = "_") %>% # split the Manufacturer_Shelf column at the underscore
+  kable() # kable table for neater output!
+```
+
+Note that we must specify the underscore here to separate the Manufacturer_Shelf column. If we do not specify that, what happens?
+
+```{r}
+# Pitfall below
+manuf_shelf_subset %>% 
+  separate(Manufacturer_Shelf, c("Manufacturer", "Shelf")) %>% # separate without sep argument specified to be _
+  kable() # kable table it!
+```
+
+Troublesome. We see that when we didn't specify `sep = "_"`in separate, then it looks like the function sometimes separates by the space and, when there is no space in the manufacturer name, it separates by the underscore. 
+
+I looked [here](https://www.rdocumentation.org/packages/tidyr/versions/0.8.1/topics/separate) to try find what specifically the sep argument separates by and here is what I found from that RDocumentation:
+
+> "The default value is a regular expression that matches any sequence of non-alphanumeric values."
+
+So, that answers it. Any sequence of non-alphanumeric values, such as a space or underscore, is the default sep value. It just depends on what R recognizes first to be a non-alphanumeric value.
 
 # Cheatsheet for dplyr functions
 

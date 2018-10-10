@@ -17,6 +17,7 @@ Table of contents
         -   [gather() function](#gather-function)
         -   [spread() function](#spread-function)
         -   [Introducing the unite() function](#introducing-the-unite-function)
+        -   [Introducing the separate() function](#introducing-the-separate-function)
 -   [Cheatsheet for dplyr functions](#cheatsheet-for-dplyr-functions)
     -   [inner\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#inner_joinoverpriced_coffee_shop_menu-coffee_brand)
     -   [semi\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)](#semi_joinoverpriced_coffee_shop_menu-coffee_brand)
@@ -281,7 +282,7 @@ cereal_subset_Nabisco_long2 %>%
 
 Booyah! We got the same output, so either way works.
 
-\*\* Example 2: \*\*
+**Example 2:**
 
 Suppose an Australian and an American go shopping for breakfast cereal. So, we want the kilojoules (kJ) listed as energy measurments of the Nabisco cereals as well as the Calories. We can first create a new column with the kilojoules displayed using the mutate() function. Then, we will use the gather() function to make one column called Energy Measure that will have both the Calories and kilojoules of the cereals. So, the value column will containt the number of Calories and the number of kilojoules for each cereal. By using the gather function, the data frame is ready for calculations.
 
@@ -365,7 +366,7 @@ head(manuf_shelf_subset) %>%
 | Almond\_Delight              | Ralston Purina\_3   |       110|       8|            2|    2|
 | Basic\_4                     | General Mills\_3    |       130|       8|            3|    2|
 
-Excellent. The top few rows are from the top shelf.
+Excellent. The top few rows (that have MANUFACTURERNAME\_3) are from the top shelf.
 
 Now, let's check that the bottom few rows of the data to see that the brands are on the first shelf.
 
@@ -384,6 +385,226 @@ tail(manuf_shelf_subset) %>%
 | Wheaties\_Honey\_Gold        | General Mills\_1    |       110|       8|            2|    1|
 
 The tail table is looking good. Now, we should check the whole data set to make sure it runs from the top shelf to the bottom shelf, but I will leave that as a tedious exercise to the reader.
+
+What we want to look for from the outputs if one particular manufacturer has top shelf, middle shelf or bottom shelf priority.
+
+``` r
+table_manuf_shelf <- table(manuf_shelf_subset$Manufacturer_Shelf) # quick look at the count of the cereal on shelf distribution
+
+table_manuf_shelf[order(table_manuf_shelf)] %>% # order from lowest to highest count
+  kable() # kable table it!
+```
+
+| Var1                           |  Freq|
+|:-------------------------------|-----:|
+| American Home Food Products\_2 |     1|
+| Nabisco\_3                     |     1|
+| Post\_2                        |     1|
+| Quaker Oats\_1                 |     1|
+| Nabisco\_2                     |     2|
+| Post\_1                        |     2|
+| Ralston Purina\_3              |     2|
+| Nabisco\_1                     |     3|
+| Quaker Oats\_2                 |     3|
+| Kelloggs\_1                    |     4|
+| Quaker Oats\_3                 |     4|
+| Ralston Purina\_1              |     4|
+| Post\_3                        |     5|
+| General Mills\_1               |     6|
+| General Mills\_2               |     7|
+| Kelloggs\_2                    |     7|
+| General Mills\_3               |     9|
+| Kelloggs\_3                    |    12|
+
+From our quick inspection of the data, it appears that Kellogs has top-shelf priority as it has 12 cereals on the top shelf. General Mills is not too far behind with 9 cereals on the top shelf. As far as bottom shelf priority, Generall Mills wins with 6 cereals on the bottom shelf. Perhaps General Mills produces a lot of children's cereal, so certain children-targeted breakfast cereals are put within easy reach on the bottom shelf. This is pure speculation, but it is good to try to reason why the data is the way it is.
+
+### Introducing the separate() function
+
+The separate function does what it claims to do - it splits one column into multiple columns. It is the complement of the unite() function in tidyr.
+
+**Example:**
+
+A complementary example to our separate function example would be to try to separate the manufacturer and shelf column into separate columns. Let's try this below!
+
+``` r
+manuf_shelf_subset %>% 
+  separate(Manufacturer_Shelf, c("Manufacturer", "Shelf"), sep = "_") %>% # split the Manufacturer_Shelf column at the underscore
+  kable() # kable table for neater output!
+```
+
+| Cereal Name                     | Manufacturer                | Shelf |  Calories|  Sugars|  Protein (g)|  Fat|
+|:--------------------------------|:----------------------------|:------|---------:|-------:|------------:|----:|
+| 100%\_Bran                      | Nabisco                     | 3     |        70|       6|            4|    1|
+| 100%\_Natural\_Bran             | Quaker Oats                 | 3     |       120|       8|            3|    5|
+| All-Bran                        | Kelloggs                    | 3     |        70|       5|            4|    1|
+| All-Bran\_with\_Extra\_Fiber    | Kelloggs                    | 3     |        50|       0|            4|    0|
+| Almond\_Delight                 | Ralston Purina              | 3     |       110|       8|            2|    2|
+| Basic\_4                        | General Mills               | 3     |       130|       8|            3|    2|
+| Bran\_Flakes                    | Post                        | 3     |        90|       5|            3|    0|
+| Clusters                        | General Mills               | 3     |       110|       7|            3|    2|
+| Cracklin'\_Oat\_Bran            | Kelloggs                    | 3     |       110|       7|            3|    3|
+| Crispix                         | Kelloggs                    | 3     |       110|       3|            2|    0|
+| Crispy\_Wheat\_&\_Raisins       | General Mills               | 3     |       100|      10|            2|    1|
+| Double\_Chex                    | Ralston Purina              | 3     |       100|       5|            2|    0|
+| Fruitful\_Bran                  | Kelloggs                    | 3     |       120|      12|            3|    0|
+| Grape\_Nuts\_Flakes             | Post                        | 3     |       100|       5|            3|    1|
+| Grape-Nuts                      | Post                        | 3     |       110|       3|            3|    0|
+| Great\_Grains\_Pecan            | Post                        | 3     |       120|       4|            3|    3|
+| Just\_Right\_Crunchy\_\_Nuggets | Kelloggs                    | 3     |       110|       6|            2|    1|
+| Just\_Right\_Fruit\_&\_Nut      | Kelloggs                    | 3     |       140|       9|            3|    1|
+| Mueslix\_Crispy\_Blend          | Kelloggs                    | 3     |       160|      13|            3|    2|
+| Nutri-Grain\_Almond-Raisin      | Kelloggs                    | 3     |       140|       7|            3|    2|
+| Nutri-grain\_Wheat              | Kelloggs                    | 3     |        90|       2|            3|    0|
+| Oatmeal\_Raisin\_Crisp          | General Mills               | 3     |       130|      10|            3|    2|
+| Post\_Nat.\_Raisin\_Bran        | Post                        | 3     |       120|      14|            3|    1|
+| Product\_19                     | Kelloggs                    | 3     |       100|       3|            3|    0|
+| Puffed\_Rice                    | Quaker Oats                 | 3     |        50|       0|            1|    0|
+| Puffed\_Wheat                   | Quaker Oats                 | 3     |        50|       0|            2|    0|
+| Quaker\_Oat\_Squares            | Quaker Oats                 | 3     |       100|       6|            4|    1|
+| Raisin\_Nut\_Bran               | General Mills               | 3     |       100|       8|            3|    2|
+| Raisin\_Squares                 | Kelloggs                    | 3     |        90|       6|            2|    0|
+| Total\_Corn\_Flakes             | General Mills               | 3     |       110|       3|            2|    1|
+| Total\_Raisin\_Bran             | General Mills               | 3     |       140|      14|            3|    1|
+| Total\_Whole\_Grain             | General Mills               | 3     |       100|       3|            3|    1|
+| Triples                         | General Mills               | 3     |       110|       3|            2|    1|
+| Apple\_Jacks                    | Kelloggs                    | 2     |       110|      14|            2|    0|
+| Cap'n'Crunch                    | Quaker Oats                 | 2     |       120|      12|            1|    2|
+| Cinnamon\_Toast\_Crunch         | General Mills               | 2     |       120|       9|            1|    3|
+| Cocoa\_Puffs                    | General Mills               | 2     |       110|      13|            1|    1|
+| Corn\_Pops                      | Kelloggs                    | 2     |       110|      12|            1|    0|
+| Count\_Chocula                  | General Mills               | 2     |       110|      13|            1|    1|
+| Cream\_of\_Wheat\_(Quick)       | Nabisco                     | 2     |       100|       0|            3|    0|
+| Froot\_Loops                    | Kelloggs                    | 2     |       110|      13|            2|    1|
+| Frosted\_Mini-Wheats            | Kelloggs                    | 2     |       100|       7|            3|    0|
+| Fruity\_Pebbles                 | Post                        | 2     |       110|      12|            1|    1|
+| Golden\_Grahams                 | General Mills               | 2     |       110|       9|            1|    1|
+| Honey\_Graham\_Ohs              | Quaker Oats                 | 2     |       120|      11|            1|    2|
+| Kix                             | General Mills               | 2     |       110|       3|            2|    1|
+| Life                            | Quaker Oats                 | 2     |       100|       6|            4|    2|
+| Lucky\_Charms                   | General Mills               | 2     |       110|      12|            2|    1|
+| Maypo                           | American Home Food Products | 2     |       100|       3|            4|    1|
+| Nut&Honey\_Crunch               | Kelloggs                    | 2     |       120|       9|            2|    1|
+| Raisin\_Bran                    | Kelloggs                    | 2     |       120|      12|            3|    1|
+| Smacks                          | Kelloggs                    | 2     |       110|      15|            2|    1|
+| Strawberry\_Fruit\_Wheats       | Nabisco                     | 2     |        90|       5|            2|    0|
+| Trix                            | General Mills               | 2     |       110|      12|            1|    1|
+| Apple\_Cinnamon\_Cheerios       | General Mills               | 1     |       110|      10|            2|    2|
+| Bran\_Chex                      | Ralston Purina              | 1     |        90|       6|            2|    1|
+| Cheerios                        | General Mills               | 1     |       110|       1|            6|    2|
+| Corn\_Chex                      | Ralston Purina              | 1     |       110|       3|            2|    0|
+| Corn\_Flakes                    | Kelloggs                    | 1     |       100|       2|            2|    0|
+| Frosted\_Flakes                 | Kelloggs                    | 1     |       110|      11|            1|    0|
+| Golden\_Crisp                   | Post                        | 1     |       100|      15|            2|    0|
+| Honey\_Nut\_Cheerios            | General Mills               | 1     |       110|      10|            3|    1|
+| Honey-comb                      | Post                        | 1     |       110|      11|            1|    0|
+| Multi-Grain\_Cheerios           | General Mills               | 1     |       100|       6|            2|    1|
+| Quaker\_Oatmeal                 | Quaker Oats                 | 1     |       100|      -1|            5|    2|
+| Rice\_Chex                      | Ralston Purina              | 1     |       110|       2|            1|    0|
+| Rice\_Krispies                  | Kelloggs                    | 1     |       110|       3|            2|    0|
+| Shredded\_Wheat                 | Nabisco                     | 1     |        80|       0|            2|    0|
+| Shredded\_Wheat\_'n'Bran        | Nabisco                     | 1     |        90|       0|            3|    0|
+| Shredded\_Wheat\_spoon\_size    | Nabisco                     | 1     |        90|       0|            3|    0|
+| Special\_K                      | Kelloggs                    | 1     |       110|       3|            6|    0|
+| Wheat\_Chex                     | Ralston Purina              | 1     |       100|       3|            3|    1|
+| Wheaties                        | General Mills               | 1     |       100|       3|            3|    1|
+| Wheaties\_Honey\_Gold           | General Mills               | 1     |       110|       8|            2|    1|
+
+Note that we must specify the underscore here to separate the Manufacturer\_Shelf column. If we do not specify that, what happens?
+
+``` r
+# Pitfall below
+manuf_shelf_subset %>% 
+  separate(Manufacturer_Shelf, c("Manufacturer", "Shelf")) %>% # separate without sep argument specified to be _
+  kable() # kable table it!
+```
+
+    ## Warning: Expected 2 pieces. Additional pieces discarded in 37 rows [2, 5,
+    ## 6, 8, 11, 12, 22, 25, 26, 27, 28, 30, 31, 32, 33, 35, 36, 37, 39, 44, ...].
+
+| Cereal Name                     | Manufacturer | Shelf  |  Calories|  Sugars|  Protein (g)|  Fat|
+|:--------------------------------|:-------------|:-------|---------:|-------:|------------:|----:|
+| 100%\_Bran                      | Nabisco      | 3      |        70|       6|            4|    1|
+| 100%\_Natural\_Bran             | Quaker       | Oats   |       120|       8|            3|    5|
+| All-Bran                        | Kelloggs     | 3      |        70|       5|            4|    1|
+| All-Bran\_with\_Extra\_Fiber    | Kelloggs     | 3      |        50|       0|            4|    0|
+| Almond\_Delight                 | Ralston      | Purina |       110|       8|            2|    2|
+| Basic\_4                        | General      | Mills  |       130|       8|            3|    2|
+| Bran\_Flakes                    | Post         | 3      |        90|       5|            3|    0|
+| Clusters                        | General      | Mills  |       110|       7|            3|    2|
+| Cracklin'\_Oat\_Bran            | Kelloggs     | 3      |       110|       7|            3|    3|
+| Crispix                         | Kelloggs     | 3      |       110|       3|            2|    0|
+| Crispy\_Wheat\_&\_Raisins       | General      | Mills  |       100|      10|            2|    1|
+| Double\_Chex                    | Ralston      | Purina |       100|       5|            2|    0|
+| Fruitful\_Bran                  | Kelloggs     | 3      |       120|      12|            3|    0|
+| Grape\_Nuts\_Flakes             | Post         | 3      |       100|       5|            3|    1|
+| Grape-Nuts                      | Post         | 3      |       110|       3|            3|    0|
+| Great\_Grains\_Pecan            | Post         | 3      |       120|       4|            3|    3|
+| Just\_Right\_Crunchy\_\_Nuggets | Kelloggs     | 3      |       110|       6|            2|    1|
+| Just\_Right\_Fruit\_&\_Nut      | Kelloggs     | 3      |       140|       9|            3|    1|
+| Mueslix\_Crispy\_Blend          | Kelloggs     | 3      |       160|      13|            3|    2|
+| Nutri-Grain\_Almond-Raisin      | Kelloggs     | 3      |       140|       7|            3|    2|
+| Nutri-grain\_Wheat              | Kelloggs     | 3      |        90|       2|            3|    0|
+| Oatmeal\_Raisin\_Crisp          | General      | Mills  |       130|      10|            3|    2|
+| Post\_Nat.\_Raisin\_Bran        | Post         | 3      |       120|      14|            3|    1|
+| Product\_19                     | Kelloggs     | 3      |       100|       3|            3|    0|
+| Puffed\_Rice                    | Quaker       | Oats   |        50|       0|            1|    0|
+| Puffed\_Wheat                   | Quaker       | Oats   |        50|       0|            2|    0|
+| Quaker\_Oat\_Squares            | Quaker       | Oats   |       100|       6|            4|    1|
+| Raisin\_Nut\_Bran               | General      | Mills  |       100|       8|            3|    2|
+| Raisin\_Squares                 | Kelloggs     | 3      |        90|       6|            2|    0|
+| Total\_Corn\_Flakes             | General      | Mills  |       110|       3|            2|    1|
+| Total\_Raisin\_Bran             | General      | Mills  |       140|      14|            3|    1|
+| Total\_Whole\_Grain             | General      | Mills  |       100|       3|            3|    1|
+| Triples                         | General      | Mills  |       110|       3|            2|    1|
+| Apple\_Jacks                    | Kelloggs     | 2      |       110|      14|            2|    0|
+| Cap'n'Crunch                    | Quaker       | Oats   |       120|      12|            1|    2|
+| Cinnamon\_Toast\_Crunch         | General      | Mills  |       120|       9|            1|    3|
+| Cocoa\_Puffs                    | General      | Mills  |       110|      13|            1|    1|
+| Corn\_Pops                      | Kelloggs     | 2      |       110|      12|            1|    0|
+| Count\_Chocula                  | General      | Mills  |       110|      13|            1|    1|
+| Cream\_of\_Wheat\_(Quick)       | Nabisco      | 2      |       100|       0|            3|    0|
+| Froot\_Loops                    | Kelloggs     | 2      |       110|      13|            2|    1|
+| Frosted\_Mini-Wheats            | Kelloggs     | 2      |       100|       7|            3|    0|
+| Fruity\_Pebbles                 | Post         | 2      |       110|      12|            1|    1|
+| Golden\_Grahams                 | General      | Mills  |       110|       9|            1|    1|
+| Honey\_Graham\_Ohs              | Quaker       | Oats   |       120|      11|            1|    2|
+| Kix                             | General      | Mills  |       110|       3|            2|    1|
+| Life                            | Quaker       | Oats   |       100|       6|            4|    2|
+| Lucky\_Charms                   | General      | Mills  |       110|      12|            2|    1|
+| Maypo                           | American     | Home   |       100|       3|            4|    1|
+| Nut&Honey\_Crunch               | Kelloggs     | 2      |       120|       9|            2|    1|
+| Raisin\_Bran                    | Kelloggs     | 2      |       120|      12|            3|    1|
+| Smacks                          | Kelloggs     | 2      |       110|      15|            2|    1|
+| Strawberry\_Fruit\_Wheats       | Nabisco      | 2      |        90|       5|            2|    0|
+| Trix                            | General      | Mills  |       110|      12|            1|    1|
+| Apple\_Cinnamon\_Cheerios       | General      | Mills  |       110|      10|            2|    2|
+| Bran\_Chex                      | Ralston      | Purina |        90|       6|            2|    1|
+| Cheerios                        | General      | Mills  |       110|       1|            6|    2|
+| Corn\_Chex                      | Ralston      | Purina |       110|       3|            2|    0|
+| Corn\_Flakes                    | Kelloggs     | 1      |       100|       2|            2|    0|
+| Frosted\_Flakes                 | Kelloggs     | 1      |       110|      11|            1|    0|
+| Golden\_Crisp                   | Post         | 1      |       100|      15|            2|    0|
+| Honey\_Nut\_Cheerios            | General      | Mills  |       110|      10|            3|    1|
+| Honey-comb                      | Post         | 1      |       110|      11|            1|    0|
+| Multi-Grain\_Cheerios           | General      | Mills  |       100|       6|            2|    1|
+| Quaker\_Oatmeal                 | Quaker       | Oats   |       100|      -1|            5|    2|
+| Rice\_Chex                      | Ralston      | Purina |       110|       2|            1|    0|
+| Rice\_Krispies                  | Kelloggs     | 1      |       110|       3|            2|    0|
+| Shredded\_Wheat                 | Nabisco      | 1      |        80|       0|            2|    0|
+| Shredded\_Wheat\_'n'Bran        | Nabisco      | 1      |        90|       0|            3|    0|
+| Shredded\_Wheat\_spoon\_size    | Nabisco      | 1      |        90|       0|            3|    0|
+| Special\_K                      | Kelloggs     | 1      |       110|       3|            6|    0|
+| Wheat\_Chex                     | Ralston      | Purina |       100|       3|            3|    1|
+| Wheaties                        | General      | Mills  |       100|       3|            3|    1|
+| Wheaties\_Honey\_Gold           | General      | Mills  |       110|       8|            2|    1|
+
+Troublesome. We see that when we didn't specify `sep = "_"`in separate, then it looks like the function sometimes separates by the space and, when there is no space in the manufacturer name, it separates by the underscore.
+
+I looked [here](https://www.rdocumentation.org/packages/tidyr/versions/0.8.1/topics/separate) to try find what specifically the sep argument separates by and here is what I found from that RDocumentation:
+
+> "The default value is a regular expression that matches any sequence of non-alphanumeric values."
+
+So, that answers it. Any sequence of non-alphanumeric values, such as a space or underscore, is the default sep value. It just depends on what R recognizes first to be a non-alphanumeric value.
 
 Cheatsheet for dplyr functions
 ==============================
@@ -557,7 +778,7 @@ ij_Grobtable <- gtable_add_grob(
 grid.arrange(sj_Grobtable, ij_Grobtable, nrow=1) # display tables side-by-side
 ```
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 left\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 ---------------------------------------------------------
@@ -613,7 +834,7 @@ Using right\_join(overpriced\_coffee\_shop\_menu, coffee\_brand), what we are do
 
 I will display the left\_join function result and the right\_join function result side-by-side for easy comparison. Again, I will use the grobTable to achieve this. The left\_join function result will be on the left, while the right\_join function result will be on the right. Also, note that I hid the code because it is basically the same as when we looked at semi\_join and inner\_join side-by-side. I will hide the code in future examples if it is basically the same as previous code blocks.
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 From the side-by-side comparison of the left\_join and right\_join function results, we can see that the only difference is that right\_join does not have the cuppa\_tea row in its output, whereas left\_join does have that row in its output.
 
@@ -639,7 +860,7 @@ We can see from the anti\_join function output that the only row the overpriced\
 
 I will aim to show this clearly by displaying the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand close to the anti\_join reslt for you to see the impact of the anti\_join function. Note I did not put all three tables side-by-side, because the tables overlap when we use tableGrob and the grid.arrange() functions.
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
 inner\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ----------------------------------------------------------
@@ -691,7 +912,7 @@ We can see here that when we set x = coffee\_brand and y = overpriced\_coffee\_s
 
 I will display the semi\_join() and the inner\_join() function results side-by-side for you to see the difference in output from using each the functions.
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-27-1.png)
 
 left\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ---------------------------------------------------------
@@ -776,7 +997,7 @@ lj_Grobtable <- gtable_add_grob(
 grid.arrange(ocsm_Grobtable, coffee_brand_Grobtable, lj_Grobtable,layout_matrix=layout) # display tables in the layout we designed using rbind()
 ```
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-26-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-29-1.png)
 
 anti\_join(coffee\_brand, overpriced\_coffee\_shop\_menu)
 ---------------------------------------------------------
@@ -800,7 +1021,7 @@ What we expect to see from the anti\_join function when we put x = coffee\_brand
 
 Again, I will display the anti\_join() function close to the original two tables (overpriced\_coffee\_shop\_menu and coffee\_brand) for you to get a visual idea of how the anti\_join() function works.
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-28-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-31-1.png)
 
 full\_join(overpriced\_coffee\_shop\_menu, coffee\_brand)
 ---------------------------------------------------------
@@ -831,7 +1052,7 @@ In the output, we see that we have all the rows from overpriced\_coffee\_shop\_m
 
 Let's compare the full\_join table with the original tables of overpriced\_coffee\_shop\_menu and coffee\_brand to see the impact of the full\_join function. Again, I will use tableGrob and grid.arrage() to arrange these tables for an easy viewing experience.
 
-![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-30-1.png)
+![](STAT545-HW04-Tidy-data-and-joins_files/figure-markdown_github/unnamed-chunk-33-1.png)
 
 Activity 3: Optional add-on to previous exercises
 =================================================
