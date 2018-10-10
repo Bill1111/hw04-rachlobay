@@ -12,6 +12,8 @@ I chose to make my own cheatsheet similar to [Tyler Rinker’s minimal guide to 
 
 I chose Activity #2 which was to create my own cheatsheet patterned after Jenny’s but focused on something I care about (other than comics)!
 
+- Also, I did Activity #3 from the join prompts for extra in my Homework 04. In this exercise, I explored the base R function merge() and the base R function match() and I compared 'em with the dplyr joins and merge.
+
 # Navigation for HW #4
 
 
